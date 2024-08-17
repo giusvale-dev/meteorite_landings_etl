@@ -9,6 +9,7 @@ Usage:
 
 from models.dimension_date_model import DimensionDateModel
 from models.dimension_location_model import DimensionLocationModel
+from models.dimension_classification_model import DimensionClassificationModel
 class MeteoriteModel:
 
     """
@@ -22,7 +23,7 @@ class MeteoriteModel:
         mass (float): The mass (in grams) of the meteorite
     """ 
     
-    def __init__(self, dimensionDateModel: DimensionDateModel, mass, dimensionLocationModel: DimensionLocationModel):
+    def __init__(self, dimensionDateModel: DimensionDateModel, mass, dimensionLocationModel: DimensionLocationModel, dimensionClassificationModel: DimensionClassificationModel):
 
         """
         Initializes a new instance of the MeteoriteModel class.
@@ -34,4 +35,5 @@ class MeteoriteModel:
         """
         self.dimensionDateModel = dimensionDateModel
         self.dimensionLocationModel = dimensionLocationModel
+        self.dimensionClassificationModel = dimensionClassificationModel
         self.mass = mass

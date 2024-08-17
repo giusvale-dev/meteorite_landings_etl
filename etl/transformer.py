@@ -12,12 +12,15 @@ from models.meteorite_landing_raw import MeteoriteLandingRaw
 from models.dimension_date_model import DimensionDateModel
 from models.meteorite_model import MeteoriteModel
 from models.dimension_location_model import DimensionLocationModel
+from models.dimension_classification_model import DimensionClassificationModel
+from models.meteorite_type import MeteoriteType
 from typing import List
 
 import sys
 import geopandas as gpd
 from shapely.geometry import Point
 from math import isclose
+from models.meteorite_type import MeteoriteType
 
 import time
 
@@ -72,6 +75,19 @@ class Transformer:
                 progress = progress + 1
                 continue
 
+            
+            primitive_achonrdites = MeteoriteType.primitive_achonrdites(tmp.recclass)
+            achonrdites = MeteoriteType.achonrdites(tmp.recclass)
+            chondrites = MeteoriteType.chondrites(tmp.recclass)
+
+            # Determine classification
+            classification = (primitive_achonrdites or achonrdites or chondrites)
+            
+            # Check if classification was found
+            if classification is None:
+                progress += 1
+                continue
+        
             location = None
             while True:
                 try:
@@ -88,7 +104,8 @@ class Transformer:
             m = MeteoriteModel(
                 dimensionDateModel = date,
                 mass = tmp.mass,
-                dimensionLocationModel=location
+                dimensionLocationModel=location,
+                dimensionClassificationModel=classification
             )
 
             self.transformed_data.append(m)
