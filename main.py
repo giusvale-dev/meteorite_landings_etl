@@ -9,38 +9,20 @@ Dependencies:
 - threading: For managing concurrent threads.
 - queue: For handling failed data retrieval ranges.
 - Extractor: Custom class to handle data extraction from NASA's API.
+- Transformer: Custom class for Transformation process
 
 Usage:
     python main.py
 """
 
 from etl.extractor import Extractor
+from etl.transformer import Transformer
 import threading
 import queue
-
-def recover_data(start_offset, end_offset, data_list, lock, failure_queue):
-    """
-    Retrieves data from a specified range of offsets using the Extractor class.
-
-    Parameters:
-    - start_offset (int): The starting offset for data retrieval.
-    - end_offset (int): The ending offset for data retrieval.
-    - data_list (list): A list to which the retrieved data will be appended.
-    - lock (threading.Lock): A lock to synchronize access to data_list.
-    - failure_queue (queue.Queue): A queue to store failed offset ranges.
-
-    Returns:
-    - None: The function does not return a value. It modifies data_list in-place
-      and uses failure_queue to report errors.
-
-    Side Effects:
-    - Appends successfully retrieved data to data_list, using the provided lock
-      for thread-safe operations.
-    - Adds failed offset ranges to 
-    """
-from etl.extractor import Extractor
-import threading
-import queue
+import geopandas as gpd
+from shapely.geometry import Point
+import os
+import time
 
 def recover_data(start_offset, end_offset, data_list, lock, failure_queue):
     """
@@ -81,6 +63,8 @@ def recover_data(start_offset, end_offset, data_list, lock, failure_queue):
         failure_queue.put((start_offset, end_offset))
 
 def main():
+     
+    start_time = time.time()
     num_threads = 5
     offsets = [(i * 10000, (i + 1) * 10000) for i in range(num_threads)]
     
@@ -98,13 +82,22 @@ def main():
         thread.join()
 
     if failure_queue.empty():
-        extractor = Extractor()
         print("Extraction completed")
+         # Transform process
+        transformer = Transformer(json_data)
+        transformer.transform()
+        print("")
+        end_time = time.time()
+        execution_time = end_time - start_time
+        print(f"Executed in {execution_time:.4f} seconds")
+        for item in transformer.transformed_data:
+            print(f"{item.mass}g, {item.dimensionLocationModel.city}, {item.dimensionLocationModel.country}, {item.dimensionLocationModel.state}")
+        
     else:
         print("One or more threads failed. Reviewing failure details.")
         while not failure_queue.empty():
             failed_range = failure_queue.get()
             print(f"Failed range: {failed_range}")
-
+    
 if __name__ == "__main__":
     main()

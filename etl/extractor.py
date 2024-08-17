@@ -50,19 +50,14 @@ class Extractor:
         Raises:
         - Exception: If an unexpected error occurs during the HTTP request.
         """
-        try:
-            response = requests.get("".join([self._NASA_API_ENDPOINT, "&$offset=", str(offset)]))
-            # Check if the request was successful
-            if response.status_code == 200:
-                # Parse the JSON content into a Python dictionary
-                return response.json()
-            else:
-                print(f"Failed to retrieve data: HTTP {response.status_code}")
-                return None
-        except Exception as e:
-                print(f"Error during HTTP request HTTP status is: {str(e)}")
-                return None
-    
+        response = requests.get("".join([self._NASA_API_ENDPOINT, "&$offset=", str(offset)]))
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Parse the JSON content into a Python dictionary
+            return response.json()
+        else:
+            raise Exception(f"Failed to retrieve data: HTTP {response.status_code}")
+            
     @property
     def NASA_API_ENDPOINT(self):
         """
