@@ -24,7 +24,7 @@ class MeteoriteLandingRaw:
         reclat (float): The latitude of the meteorite landing location in decimal degrees.
         reclong (float): The longitude of the meteorite landing location in decimal degrees.
     """   
-    def __init__(self, name, recclass, mass, year, reclat, reclong):
+    def __init__(self, recclass, mass, year, reclat, reclong):
         """
         Initializes a new instance of the MeteoriteLandingRaw class.
 
