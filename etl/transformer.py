@@ -16,7 +16,6 @@ from models.dimension_classification_model import DimensionClassificationModel
 from models.meteorite_type import MeteoriteType
 from typing import List
 
-import sys
 import geopandas as gpd
 from shapely.geometry import Point
 from math import isclose
@@ -62,33 +61,45 @@ class Transformer:
         for item in self.raw_data:
 
             percentage = (progress/len(self.raw_data)) * 100
-            sys.stdout.write(f"\rProgress: {percentage:.2f}%")
-            sys.stdout.flush()
+            #print(f"\rProgress: {percentage:.2f}%", end='', flush=True)
 
+            print(f"Transformation of {item}")
+            
+            print("clean...")
             tmp = self.__clean(item)
             if(tmp is None):
                 progress = progress + 1
+                print("The element will be deleted by clean process")
                 continue
+            print("clean DONE...")
 
+            print("Dimension Date....")
             date = DimensionDateModel(tmp.year)
             if(date is None):
+                print("The element will be deleted, because the year field is not well formed")
                 progress = progress + 1
                 continue
+            print("Dimension Date DONE....")
 
             
             primitive_achonrdites = MeteoriteType.primitive_achonrdites(tmp.recclass)
             achonrdites = MeteoriteType.achonrdites(tmp.recclass)
             chondrites = MeteoriteType.chondrites(tmp.recclass)
 
+            print("Dimension Classification....")
             # Determine classification
             classification = (primitive_achonrdites or achonrdites or chondrites)
             
+
             # Check if classification was found
             if classification is None:
+                print("The element will be deleted, because the recclass field is not well formed or recognised")
                 progress += 1
                 continue
+            print("Dimension Classification Done")
         
             location = None
+            print("Dimension Location...")
             while True:
                 try:
                     location = self.__transform_location_dimension((tmp.reclat, tmp.reclong))
@@ -98,9 +109,11 @@ class Transformer:
                     time.sleep(1) # 1 second
                 
             if(location is None):
+                print("Dimension Location will be deleted because the geographic coordinates are not compliant with our purpose")
                 progress = progress + 1
                 continue
-                
+
+            print("Dimension Location DONE")    
             m = MeteoriteModel(
                 dimensionDateModel = date,
                 mass = tmp.mass,

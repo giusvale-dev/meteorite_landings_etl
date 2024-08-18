@@ -21,8 +21,9 @@ import threading
 import queue
 import geopandas as gpd
 from shapely.geometry import Point
-import os
+#TODO: remove me import os
 import time
+#TODO: remove me from sqlalchemy import create_engine, text
 
 def recover_data(start_offset, end_offset, data_list, lock, failure_queue):
     """
@@ -64,6 +65,17 @@ def recover_data(start_offset, end_offset, data_list, lock, failure_queue):
 
 def main():
      
+    # TODO: Delete the below commented code: 
+    # DATABASE_URL = os.getenv("DATABASE_URL")
+    # print(DATABASE_URL)
+    # engine = create_engine(DATABASE_URL)
+    # with engine.connect() as connection:
+    #     while True:
+    #         result = connection.execute(text("SELECT 'Hello, SQLAlchemy!'"))
+    #         for row in result:
+    #             print(row[0])
+    
+
     start_time = time.time()
     num_threads = 5
     offsets = [(i * 10000, (i + 1) * 10000) for i in range(num_threads)]

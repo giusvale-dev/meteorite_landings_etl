@@ -23,15 +23,20 @@ services:
       - custom-network 
     depends_on:
       - db
+  
+  app:
+    build: .
+    restart: on-failure
+    environment:
+        DATABASE_URL: postgresql+psycopg2://username:password@db:5432/meteorite-landings  
+    volumes:
+      - .:/app
+    networks:
+      - custom-network 
+    depends_on:
+      - db
+    command: python main.py
+
 networks:
   custom-network:
     driver: bridge
-  #web:
-  #  build: .
-  #  command: python3 manage.py runserver 0.0.0.0:8000
-  #  volumes:
-  #    - .:/slack_code
-  #  ports:
-  #    - "8000:8000"
-  #  depends_on:
-  #    - db

@@ -2,3 +2,5 @@ requests
 geopandas
 shapely
 geopy
+SQLAlchemy
+psycopg2-binary
