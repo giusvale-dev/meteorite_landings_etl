@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    environment:
+        POSTGRES_DB: meteorite-landings
+        POSTGRES_USER: username
+        POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    networks:
+      - custom-network
+    volumes:
+      - ./init-scripts:/docker-entrypoint-initdb.d/
+  
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - custom-network 
+    depends_on:
+      - db
+networks:
+  custom-network:
+    driver: bridge
+  #web:
+  #  build: .
+  #  command: python3 manage.py runserver 0.0.0.0:8000
+  #  volumes:
+  #    - .:/slack_code
+  #  ports:
+  #    - "8000:8000"
+  #  depends_on:
+  #    - db
