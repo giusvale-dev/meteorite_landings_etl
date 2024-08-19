@@ -19,11 +19,8 @@ from etl.extractor import Extractor
 from etl.transformer import Transformer
 import threading
 import queue
-import geopandas as gpd
-from shapely.geometry import Point
-#TODO: remove me import os
 import time
-#TODO: remove me from sqlalchemy import create_engine, text
+from etl.loader import Loader
 
 def recover_data(start_offset, end_offset, data_list, lock, failure_queue):
     """
@@ -65,17 +62,6 @@ def recover_data(start_offset, end_offset, data_list, lock, failure_queue):
 
 def main():
      
-    # TODO: Delete the below commented code: 
-    # DATABASE_URL = os.getenv("DATABASE_URL")
-    # print(DATABASE_URL)
-    # engine = create_engine(DATABASE_URL)
-    # with engine.connect() as connection:
-    #     while True:
-    #         result = connection.execute(text("SELECT 'Hello, SQLAlchemy!'"))
-    #         for row in result:
-    #             print(row[0])
-    
-
     start_time = time.time()
     num_threads = 5
     offsets = [(i * 10000, (i + 1) * 10000) for i in range(num_threads)]
@@ -102,8 +88,13 @@ def main():
         end_time = time.time()
         execution_time = end_time - start_time
         print(f"Executed in {execution_time:.4f} seconds")
-        for item in transformer.transformed_data:
-            print(f"{item.mass}g, {item.dimensionLocationModel.city}, {item.dimensionLocationModel.country}, {item.dimensionLocationModel.state}")
+
+        with Loader(transformer.transformed_data) as loader:
+            try:
+                loader.save_data()
+                print(f"The ETL process finished without error")
+            except Exception as e:
+                print(f"The ETL process is failed - {str(e)}")
         
     else:
         print("One or more threads failed. Reviewing failure details.")

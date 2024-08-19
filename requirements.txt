@@ -4,3 +4,4 @@ shapely
 geopy
 SQLAlchemy
 psycopg2-binary
+geoalchemy2

@@ -1,5 +1,21 @@
+"""
+MeteoriteType Class to classify meteorites based on NASA classification strings.
+
+Author: Giuseppe Valente <valentepeppe@gmail.com>
+
+Usage:
+    - Create an instance of DimensionClassificationModel.
+"""
 from models.dimension_classification_model import DimensionClassificationModel
 class MeteoriteType:
+
+    """
+    Provides methods to classify meteorites based on NASA classification strings.
+
+    This class includes static methods to generate `DimensionClassificationModel`
+    instances for different types of meteorites: Primitive Achondrites, Chondrites,
+    and Achondrites.
+    """
 
     @staticmethod
     def primitive_achonrdites(nasa_classification:str):

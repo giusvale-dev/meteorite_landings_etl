@@ -8,6 +8,7 @@ CREATE TABLE "public"."classification" (
     "material_type" character varying(255),
     "chemical_composition" character varying(255),
     "clan" character varying(255),
+    "clazz" character varying(255),
     CONSTRAINT "classification_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
@@ -18,7 +19,7 @@ CREATE SEQUENCE date_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
 CREATE TABLE "public"."date" (
     "id" integer DEFAULT nextval('date_id_seq') NOT NULL,
-    "date" double precision,
+    "date" timestamp,
     "month" integer,
     "quarter" integer,
     "year" integer,
@@ -32,7 +33,8 @@ CREATE SEQUENCE location_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE
 
 CREATE TABLE "public"."location" (
     "id" integer DEFAULT nextval('location_id_seq') NOT NULL,
-    "location" point,
+    "latitude" FLOAT,
+    "longitude" FLOAT,
     "city" character varying(255),
     "state" character varying(255),
     "country" character varying(255),
@@ -45,12 +47,11 @@ DROP SEQUENCE IF EXISTS meteorite_id_seq;
 CREATE SEQUENCE meteorite_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
 CREATE TABLE "public"."meteorite" (
-    "id" integer DEFAULT nextval('meteorite_id_seq') NOT NULL,
     "mass" real NOT NULL,
     "id_location" integer NOT NULL,
     "id_classification" integer NOT NULL,
     "id_date" integer NOT NULL,
-    CONSTRAINT "meteorite_pkey" PRIMARY KEY ("id")
+    PRIMARY KEY (id_location, id_classification, id_date)
 ) WITH (oids = false);
 
 

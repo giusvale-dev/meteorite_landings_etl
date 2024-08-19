@@ -2,7 +2,7 @@ version: '3'
 
 services:
   db:
-    image: postgres
+    image: postgis/postgis:latest
     environment:
         POSTGRES_DB: meteorite-landings
         POSTGRES_USER: username

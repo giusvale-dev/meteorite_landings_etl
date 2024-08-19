@@ -257,6 +257,3 @@ class Transformer:
             return False # Oceania
         else:
             return False #Remote Area
-    
-    def __transform_classification_dimension(self, item):
-        pass
